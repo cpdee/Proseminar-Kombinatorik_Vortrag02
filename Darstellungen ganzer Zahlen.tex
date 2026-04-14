@@ -11,7 +11,6 @@
 \usepackage{mathtools}
 \usepackage{url}
 \usepackage{enumitem}
-\usepackage{ulem}
 \usepackage[
   colorlinks=true,
   linkcolor=blue,
@@ -41,16 +40,14 @@
 
 \newtheorem{satz}{Satz}
 \newtheorem{definition}[satz]{Definition}
-\newtheorem{korollar}[satz]{Korollar}
 \newtheorem{lemma}[satz]{Lemma}
-\newtheorem{prop}[satz]{Proposition}
 \newtheorem{beispiel}[satz]{Beispiel}
 
 
 
 \title{Darstellungen ganzer Zahlen \\ [0.5em] \Large Eine Ausarbeitung zum Vortrag \\ Proseminar Kombinatorik \\ Sommersemester 2026}
 \date{\today}
-\author{Carl-Phlip Deerberg \\ \url{carl-philip.deerberg@uni-bielefeld.de}}
+\author{Carl-Philip Deerberg \\ \url{carl-philip.deerberg@uni-bielefeld.de}}
 
 
 
@@ -242,49 +239,53 @@
 
   Aufgrund dieser Schwierigkeit wird im Regelfall eine andere Darstellung für die ganzen Zahlen verwendet.
 
-  Man nimmt jede negative Zahl $z\in \{-2^{l-1},\dots,-1\}$ mit $z+2^l$.
-  $l$ steht hier für die Anzahl der verwendeten Bits. 
-  Da jedes Bit zwei Zustände annehmen kann, lassen sich $2^l$ Zahlen mit $l$ Bits darstellen.
-  Da auch bei dieser Darstellung prinzipiell ein Bit für das Vorzeichen reserviert wird, ist dieses Bit nicht zur Darstellung des Betrags der Zahl verfügbar.
-  Dementsprechend reduziert sich die Anzahl der darstellbaren Zahlen mit $l$ Bits auf $2^{l-1}$.
+  \subsection{b-Komplementdarstellung - Einführung und Beispiel}
 
-  \begin{beispiel} \label{bsp:Komplementdarstellung_Erklärung}
-    Bei 4 verfügbaren Bits, also $l=4$, wird beispielsweise die Zahl $z=-3$ wie folgt dargestellt:
-    \begin{align*}
-      z+2^l = -3+16 = 13
-    \end{align*}
-    $13$ wird in Binärform zu $1101$.
-    Da das erste Bit eine $1$ ist, hat dieses einen negativen Wert und man interpretiert die Bits wie folgt:
-    \begin{align*}
-      &\text{Bit 3: } -2^3 = -8 \\
-      &\text{Bit 2: } 2^2 = 4 \\
-      &\text{Bit 1: } 2^1 = 2 \\
-      &\text{Bit 0: } 2^0 = 1
-    \end{align*}
-    Konkret für $1101$ bedeutet dies
-    \begin{equation*}
-      (1 \cdot (-8)) + (1 \cdot 4) + (0 \cdot 2) + (1 \cdot 2) = -3
-    \end{equation*}
-  \end{beispiel}
+    Man nimmt jede negative Zahl $z\in \{-2^{l-1},\dots,-1\}$ mit $z+2^l$.
+    $l$ steht hier für die Anzahl der verwendeten Bits. 
+    Da jedes Bit zwei Zustände annehmen kann, lassen sich $2^l$ Zahlen mit $l$ Bits darstellen.
+    Da auch bei dieser Darstellung prinzipiell ein Bit für das Vorzeichen reserviert wird, ist dieses Bit nicht zur Darstellung des Betrags der Zahl verfügbar.
+    Dementsprechend reduziert sich die Anzahl der darstellbaren Zahlen mit $l$ Bits auf $2^{l-1}$.
 
-  Daraus folgt, dass sich mit vier Bits die folgenden Zahlen darstellen lassen:
-  \begin{beispiel} \label{bsp:Komplementdarstellung_4Bits}
-    \begin{align*}
-      0 \Leftrightarrow 0000  ~&;~  -8 \Leftrightarrow 1000 \\
-      1 \Leftrightarrow 0001  ~&;~  -7 \Leftrightarrow 1001 \\
-      & \vdots \\
-      7 \Leftrightarrow 0111  ~&;~  -1 \Leftrightarrow 1111
-    \end{align*}    
-    Die Addition funktioniert hier auch wie bereits beschrieben:
-    \begin{align*}
-      &0010 \text{ also } 2 \\
-      +~ &1001 \text{ also } -7 \\
-      =~ &1011 \text{ also } -5
-    \end{align*}
-  \end{beispiel}
+    \begin{beispiel} \label{bsp:Komplementdarstellung_Erklärung}
+      Bei 4 verfügbaren Bits, also $l=4$, wird beispielsweise die Zahl $z=-3$ wie folgt dargestellt:
+      \begin{align*}
+        z+2^l = -3+16 = 13
+      \end{align*}
+      $13$ wird in Binärform zu $1101$.
+      Da das erste Bit eine $1$ ist, hat dieses einen negativen Wert und man interpretiert die Bits wie folgt:
+      \begin{align*}
+        &\text{Bit 3: } -2^3 = -8 \\
+        &\text{Bit 2: } 2^2 = 4 \\
+        &\text{Bit 1: } 2^1 = 2 \\
+        &\text{Bit 0: } 2^0 = 1
+      \end{align*}
+      Konkret für $1101$ bedeutet dies
+      \begin{equation*}
+        (1 \cdot (-8)) + (1 \cdot 4) + (0 \cdot 2) + (1 \cdot 2) = -3
+      \end{equation*}
+    \end{beispiel}
+
+    Daraus folgt, dass sich mit vier Bits die folgenden Zahlen darstellen lassen:
+    \begin{beispiel} \label{bsp:Komplementdarstellung_4Bits}
+      \begin{align*}
+        0 \Leftrightarrow 0000  ~&;~  -8 \Leftrightarrow 1000 \\
+        1 \Leftrightarrow 0001  ~&;~  -7 \Leftrightarrow 1001 \\
+        & \vdots \\
+        7 \Leftrightarrow 0111  ~&;~  -1 \Leftrightarrow 1111
+      \end{align*}    
+      Die Addition funktioniert hier auch wie bereits beschrieben:
+      \begin{align*}
+        &0010 \text{ also } 2 \\
+        +~ &1001 \text{ also } -7 \\
+        =~ &1011 \text{ also } -5
+      \end{align*}
+    \end{beispiel}
+
+\subsection{b-Komplementdarstellung - allgemeine Formulierung}
 
   Wir wollen die $b$-Komplementdarstellung einer Zahl nun allgemein und für beliebige Basen $b \geq 2$ definieren.
-  
+
   Zunächst definieren wir hierfür das $b$-Komplement in allgemeiner Form:
 
   \begin{definition} \label{def:b-Komplement}
@@ -340,7 +341,7 @@
     \end{proof}
 
   Wir betrachten das folgende Beispiel und nutzen das Lemma~\ref{lem:b-Komplement_berechnen}~\ref{lem:b-Komplement_berechnen_Berechnung}, um das $b$-Komplement von positiven Zahlen zu berechnen.
-  Prinzipiell subtrahiert man erst $1$ von der ursprünglichen Zahl und berechnet dasnn stellenweise die Differenz zu $b-1$:
+  Prinzipiell subtrahiert man erst $1$ von der ursprünglichen Zahl und berechnet dann stellenweise die Differenz zu $b-1$:
 
   \begin{beispiel}
     \begin{enumerate}
@@ -378,6 +379,8 @@
   Nun können wir ganze Zahlen in der $b$-Komplementdarstellung darstellen und speichern.
   Damit Computer adäquat damit rechnen können, ist es vorteilhaft, wenn diese Zahlen dabei eine einheitliche Struktur aufweisen.
   Konkret geht es darum, beliebige positive oder negative ganze Zahlen in einem festgelegten Speicherbereich von $l$ Stellen unterbringen zu können.
+
+\subsection{l-stellige b-Komplementdarstellung}
   Möglich gemacht wird diese einheitliche Darstellung durch die folgende Definition:
 
   \begin{definition} \label{def:l-stellige_b-Komplementdarstellung}

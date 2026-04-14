@@ -1,0 +1,467 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[T1]{fontenc} % Wichtig für Trennung von Wörtern
+\usepackage[utf8]{inputenc} % Erlaubt Umlaute im Code
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+\usepackage{bbm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{ulem}
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+]{hyperref}
+\usepackage{cleveref}
+
+% Package zum verweisen auf Literatur
+\usepackage[style=numeric]{biblatex}
+\addbibresource{literatur.bib}
+
+% 1,5-fachen Zeilenabstand einstellen
+\usepackage{setspace}
+\onehalfspacing
+
+% Seitenumbrüche in Matheumgebungen erlauben
+\allowdisplaybreaks
+
+\newcommand{\N}{\mathbbm{N}} % natürliche Zahlen
+\newcommand{\Z}{\mathbbm{Z}} % ganze Zahlen
+\newcommand{\R}{\mathbb{R}} % reelle Zahlen
+\newcommand{\C}{\mathbb{C}} % komplexe Zahlen
+\newcommand{\Q}{\mathbb{Q}} % rationale Zahlen
+
+
+
+\newtheorem{satz}{Satz}
+\newtheorem{definition}[satz]{Definition}
+\newtheorem{korollar}[satz]{Korollar}
+\newtheorem{lemma}[satz]{Lemma}
+\newtheorem{prop}[satz]{Proposition}
+\newtheorem{beispiel}[satz]{Beispiel}
+
+
+
+\title{Darstellungen ganzer Zahlen \\ [0.5em] \Large Eine Ausarbeitung zum Vortrag \\ Proseminar Kombinatorik \\ Sommersemester 2026}
+\date{\today}
+\author{Carl-Phlip Deerberg \\ \url{carl-philip.deerberg@uni-bielefeld.de}}
+
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+
+\pagenumbering{arabic}
+
+\section{Einleitung}
+  Die Ausarbeitung befasst sich mit Darstellungsformen von Zahlen, insbesondere ganzer Zahlen und basiert auf \cite{hougardy2018}. 
+    
+  \vspace{\baselineskip}
+
+  Während für Menschen die Menge der ganzen Zahlen zwar eine nicht überschaubar große Menge an Zahlen darstellt, so sind die Elemente der Menge jedoch gut darstellbar.
+  Nehmen wir ein beliebiges Element der ganzen Zahlen, so ist dieses in unserer schriftlichen Darstellung eindeutig, für jeden verständlich und leicht reproduzierbar.
+  Gleich ob es eine Zahl in vorstellbarer Größenordnung wie ``2'' oder ``8'' ist, oder eine tendenziell schwerer vorstellbare Zahl wie ``27439'' ist, diese Zahlen sind alle übersichtlich in Schritform festzuhalten.
+    
+  Von dieser für uns gewohnten Darstellung ausgehend können wir uns nun die Frage stellen, welche Alternativen es geben kann, die Elemente der ganzen Zahlen darzustellen.
+  Insbesondere betrachten wir die Frage, in welcher Form Computer Zahlen darstellen, speichern und verarbeiten.
+
+  Um diese Frage zu beantworten müssen wir auf die Ebene der Datenverarbeitung in einem Computer blicken.
+  Für diese digitale Verarbeitung beliebiger Daten hat ein Computer nur die Möglichkeit, diese in Form von Bits zu speichern.
+  Jedes dieser Bits kann nur zwei Zustände annehmen; 0 oder 1. 
+  Also schauen wir uns im Folgenden an, wie man ausschließlich mit Nullen und Einsen Zahlen darstellen kann.
+
+  Grundsätzliche Definitionen wie die Menge der ganzen oder natürlichen Zahlen werden in dieser Ausarbeitung nicht ausführlich behandelt.
+  Lediglich wird bemerkt, dass es für die folgenden Darstellungen irrelevant ist, ob wir von der Definition $\N = \{1, 2, 3, \dots\}$ ausgehen, oder ob wir die alternative Definition $\N = \{0, 1, 2, 3, \dots\}$ verwenden.
+  Die hier diskutierten Sätze funktionieren in beiden Fällen, auch wenn ich von der erstgenannten Definition ausgehe.
+
+\newpage
+
+\section{b-adische Darstellung natürlicher Zahlen}
+  Bevor wir die Frage für beliebige ganze Zahlen beantworten, betrachten wir zunächst eine übliche Darstellungsform für natürliche Zahlen, die sogenannte $b$-adische Darstellung.
+  Mathematisch lässt sich diese durch den folgenden Satz beschreiben: 
+
+  \begin{satz} \label{satz:b-adische_Darstellung}
+    Sei $b\in \N, b \geq 2$ und $n \in \N$. 
+
+    Dann existieren $l \in \N$ und $z_i \in \{0, \dots, b-1\}, {i = 0, \dots, l-1},$ welche die Bedingungen $z_{l-1} \neq 0$ und 
+    \begin{equation}
+      n = \sum_{i=0}^{l-1}z_ib^i \label{eq:b-adische_Darstellung_n}
+    \end{equation}
+    erfüllen.
+    $l$ und $z_i$ sind dabei eindeutig bestimmt. Dabei heißt dann $z_{l-1}\dots z_0$ die \textbf{b-adische Darstellung} von n und man schreibt auch $n=(z_{l-1} \dots z_0)_b$. \\
+    Dabei gilt: 
+    \begin{equation}
+      l-1 = \lfloor \log_b n \rfloor. \label{eq:b-adische_Darstellung_log}
+    \end{equation}
+  \end{satz}
+
+  Für den Beweis des Satzes benötigen wir das folgende Lemma, siehe \cite[S.~17,~Lemma~1.19]{hougardy2018}:
+
+    \begin{lemma} \label{lemma:Eindeutigkeit_b-adische_Darstellung}
+      Sei $k \in \N$ und $l \in \N$. 
+      Definiere $f^l \colon \{0, \dots, k-1\}^l \to \{0, \dots, k^l-1\}$ durch $f^l(w) \coloneq \sum_{i=1}^l a_i k^{l-i}$ für alle $w=a_1 \dots a_l \in \{0, \dots, k-1\}^l$.
+      Dann ist $f^l$ wohldefiniert und bijektiv.
+    \end{lemma}
+      \begin{proof}
+        Siehe \cite[S.~17f,~Lemma~1.19]{hougardy2018}
+      \end{proof}
+    
+    \begin{proof} von Satz~\ref{satz:b-adische_Darstellung}. 
+
+      Wir beweisen zunächst die Aussage \eqref{eq:b-adische_Darstellung_log}. 
+
+      Falls gilt, dass $n=\sum_{i=0}^{l-1} z_i b^i$ mit $z_i \in \{0, \dots, b-1\}$ für $i = 0, \dots, l-1$ und $z_{l-1} \neq 0$, also $n$ darstellbar als:
+      \begin{equation*}
+        n = z_{l-1}b^{l-1} + z_{l-2}b^{l-2} + \dots + z_0,
+      \end{equation*}
+      so können wir $n$ nach unten abschätzen:
+      \begin{equation*}
+        n \geq z_{l-1}b^{l-1} \geq 1 \cdot b^{l-1} = b^{l-1}.
+      \end{equation*}
+      Da $z_i \leq b-1$, gilt
+      \begin{align*}
+        &n = \sum_{i=0}^{l-1} z_ib^i \leq \sum_{i=0}^{l-1} (b-1)b^i = (b-1) \underbrace{\sum_{i=0}^{l-1} b^i}_{\mathclap{\text{geometrische Reihe}}} = (b-1) \frac{b^l-1}{b-1} = b^l-1 \\
+        &\Rightarrow n \leq b^l -1 \\
+        &\Rightarrow n < b^l
+      \end{align*}
+      Es gilt also $b^{l-1} \leq n < b^l$. Wir wenden den Logarithmus auf die Terme an: 
+      \begin{equation*}
+        \log_b(b^{l-1}) \leq \log_b(n) < \log_b(b^l).
+      \end{equation*}
+      Da $\log_b(b^x) = x$ gilt, folgt
+      \begin{equation*}
+        l-1 \leq \log_b(n) < l,
+      \end{equation*}
+      also 
+      \begin{equation*}
+        l-1 = \lfloor \log_b n \rfloor.
+      \end{equation*}
+
+      \textit{Beweis der Eindeutigkeit} 
+
+      Die Eindeutigkeit folgt aus der Bijektivität der Abbildung $f^l$ aus Lemma~\ref{lemma:Eindeutigkeit_b-adische_Darstellung}.
+      Die Länge $l$ ist gegeben durch $l= \lfloor \log_b(n) \rfloor +1$ für festes $n$. 
+      Da $f^l$ injektiv ist, gibt es genau eine Folge $(z_i)_{i=0,\dots,l-1}$, welche $n=\sum_{i=0}^{l-1} z_ib^i$ erfüllt.
+      Die Bedingung $z_{l-1} \neq 0$ gilt automatisch mit der Wahl von $l$, da $n \geq b^{l-1}$.
+
+      \textit{Beweis der Existenz} 
+
+      Wir beweisen die Existenz der $b$-adischen Darstellung durch vollständige Induktion über $l(n) \coloneq 1+ \lfloor \log_b(n) \rfloor$. 
+      Eine Erläuterung der vollständigen Induktion findet sich in \cite[S.~26]{hougardy2018}.
+
+      Induktionsanfang: 
+      \begin{equation*}
+        l(n) = 1 = 1+ \lfloor \log_b(n) \rfloor \Rightarrow \lfloor \log_b(n) \rfloor = 0
+      \end{equation*}
+      Das gilt für alle $n$ mit $b^0 \leq n < b^1 \Rightarrow n \in \{1, \dots, b-1\}$. 
+      Dann ist die Darstellung $n = \sum_{i=0}^0 z_i b^i = z_0 b^0 = z_0$ trivial.
+
+      Induktionsschritt: $l-1 \to l$. 
+
+      Sei $n\in\N$ mit $l(n) = l \geq 2$ und wir setzen $n' \coloneq \lfloor \frac{n}{b} \rfloor$.
+      Für $l' = l(n')$ gilt \[l' = \left\lfloor \log_b \left\lfloor \frac{n}{b} \right\rfloor \right\rfloor + 1 = \left\lfloor \log_b (\frac{n}{b}) \right\rfloor + 1 = \left\lfloor \log_b n \right\rfloor - 1 + 1 = l - 1\]
+      Dann existiert nach Induktionsvoraussetzung für $n'$ eine Darstellung 
+      \[n' = \sum_{i=0}^{l' -1} z'_i b^i \text{ mit } z'_i \in \{0,\dots,b-1\} \text{ und } z'_{l'-1} \neq 0\]
+      Es gilt mit $z_0 \coloneq n \bmod b \in \{0, \dots, b-1 \}$:
+      \[n = b \cdot \left\lfloor \frac{n}{b} \right\rfloor + (n \bmod b) = b \cdot n' + z_0\]
+      Einsetzen der Induktionsvoraussetzung ergibt
+      \begin{align*}
+        n = b\cdot \left(\sum_{i=0}^{l'-1}z'_i b^i\right) + z_0 = \left(\sum_{i=0}^{l'-1}z'_i b^{i+1}\right) + z_0
+        \underbrace{=}_{\mathclap{j\coloneq i+1}} \left(\sum_{j=1}^{l'} z'_{j-1}b^j\right) + z_0
+      \end{align*}
+      Da $l' = l-1$, setze $z_j \coloneq z'_{j-1}$ für $j \in \{1,\dots,l-1\}$ und wir erhalten
+      \begin{equation*}
+        n = \sum_{j=1}^{l-1} z_j b^j + z_0 b^0 = \sum_{j=0}^{l-1} z_jb^j
+      \end{equation*}
+
+    \end{proof}
+
+  \begin{beispiel} \label{bsp:Binärdarstellung}
+    Die Zahl $106$ lässt sich, ähnlich zur üblichen Dezimaldarstellung, $b$-adisch wie folgt schreiben:
+    \begin{align*}
+      106 &= 1 \cdot 10^2 + 0 \cdot 10^1 + 6 \cdot 10^0 \\
+          &= 1 \cdot 2^6 + 1 \cdot 2^5 + 0 \cdot 2^4 + 1 \cdot 2^3 + 0 \cdot 2^2 + 1 \cdot 2^1 + 0 \cdot 2^0
+    \end{align*}
+    bzw. dann in für Computer verarbeitbarer Binärdarstellung 1101010. 
+    Wie wir in Satz~\ref{satz:b-adische_Darstellung} gesehen haben, kann man jede beliebige Zahl $b\geq 2$ als Basis für die Darstellung der natürlichen Zahl nehmen.
+  \end{beispiel}
+
+  Die Rechenoperationen innerhalb der natürlichen Zahlen funktionieren innerhalb der Binärdarstellung ähnlich der üblichen Operationen wie im gewöhnlichen System.
+
+  \vspace{\baselineskip}
+
+  Folgendes sei noch kurz anzumerken:
+  Die Wahl von $b$ mit der entsprechenden Einschränkung folgt aus der praktischen Relevanz für die Datenverarbeitung:
+  Computer nutzen außer der bereits diskutierten Binärdarstellung ($b=2$) die Oktaldarstellung ($b=8$) und auch die Hexadezimaldarstellung ($b=16$).
+
+\newpage
+
+\section{b-Komplementdarstellung ganzer Zahlen}
+
+  Nachdem wir uns die Darstellung der natürlichen Zahlen angeschaut haben, stellen wir uns die Frage, wie wir die ganzen Zahlen entsprechend darstellen können.
+  Bei unserer gewohnten Darstellung besteht der Unterschied zwischen den natürlichen Zahlen und den ganzen Zahlen im wesentlichen lediglich in dem vorangestellten Vorzeichen:
+  Für die ganzen Zahlen stellen wir jedem Element der natürlichen Zahlen ein ``$-$'' voran und erhalten die Menge $\Z = \{\dots,-3, -2, -1, 0, 1,2,3,\dots\}$
+
+  Lässt sich dieses System auch analog auf eine für Computer verarbeitbare Darstellung übertragen?
+  Schaut man sich das oben betrachtete System aus Bits, welche die Zustände $0$ und $1$ annehmen können, wäre es so etwa möglich, das erste Bit für das jeweilige Vorzeichen zu reservieren.
+  Man spricht hier dann von einer sogenannten Vorzeichen- oder auch Betragsdarstellung von Zahlen.
+
+  \begin{beispiel} \label{bsp:Binärdarstellung_Vorzeichen}
+    Eine einfache Darstellung wäre hier eine Binärdarstellung mit vier Bits.
+    Das erste Bit verwenden wir, um das Vorzeichen der mit den weiteren drei Bits folgenden Zahl darzustellen.
+    Die $0$ im ersten Bit steht dabei für ein positives Vorzeichen, die $1$ für ein negatives.
+    So ist $+5 \Leftrightarrow 0101$ und $-5 \Leftrightarrow 1101$.
+    Durch diese Darstellung lassen sich die Zahlen $-7$ bis $+7$ wie folgt darstellen:
+    \begin{align*}
+      0 \Leftrightarrow 0000  ~&;~  -0 \Leftrightarrow 1000 \\
+      1 \Leftrightarrow 0001  ~&;~  -1 \Leftrightarrow 1001 \\
+      & \vdots \\
+      7 \Leftrightarrow 0111  ~&;~  -7 \Leftrightarrow 1111
+    \end{align*}
+  \end{beispiel}
+  
+  Ein Nachteil ist hier bereits offensichtlich: Es gibt 2 verschiedene Darstellungen für die $0$.
+  Während dies jedoch in der Datenverarbeitung vernachlässigbar wäre, stellt sich ein Problem bei der Rechenoperation der Addition heraus.
+  Bei der Binärdarstellung für natürliche Zahlen, vergleiche Beispiel~\ref{bsp:Binärdarstellung}, funktioniert die Addition Bitweise wie bei der gewöhnlichen, schriftlichen Addition spaltenweise.
+  Dort ergibt beispielsweise $0001 + 0001 = 0010$, also $1+1=2$. 
+  Dementsprechend muss im Beispiel~\ref{bsp:Binärdarstellung_Vorzeichen} dann $0010+1001=0001$, also $2+(-1)=1$, ergeben.
+
+  Aufgrund dieser Schwierigkeit wird im Regelfall eine andere Darstellung für die ganzen Zahlen verwendet.
+
+  Man nimmt jede negative Zahl $z\in \{-2^{l-1},\dots,-1\}$ mit $z+2^l$.
+  $l$ steht hier für die Anzahl der verwendeten Bits. 
+  Da jedes Bit zwei Zustände annehmen kann, lassen sich $2^l$ Zahlen mit $l$ Bits darstellen.
+  Da auch bei dieser Darstellung prinzipiell ein Bit für das Vorzeichen reserviert wird, ist dieses Bit nicht zur Darstellung des Betrags der Zahl verfügbar.
+  Dementsprechend reduziert sich die Anzahl der darstellbaren Zahlen mit $l$ Bits auf $2^{l-1}$.
+
+  \begin{beispiel} \label{bsp:Komplementdarstellung_Erklärung}
+    Bei 4 verfügbaren Bits, also $l=4$, wird beispielsweise die Zahl $z=-3$ wie folgt dargestellt:
+    \begin{align*}
+      z+2^l = -3+16 = 13
+    \end{align*}
+    $13$ wird in Binärform zu $1101$.
+    Da das erste Bit eine $1$ ist, hat dieses einen negativen Wert und man interpretiert die Bits wie folgt:
+    \begin{align*}
+      &\text{Bit 3: } -2^3 = -8 \\
+      &\text{Bit 2: } 2^2 = 4 \\
+      &\text{Bit 1: } 2^1 = 2 \\
+      &\text{Bit 0: } 2^0 = 1
+    \end{align*}
+    Konkret für $1101$ bedeutet dies
+    \begin{equation*}
+      (1 \cdot (-8)) + (1 \cdot 4) + (0 \cdot 2) + (1 \cdot 2) = -3
+    \end{equation*}
+  \end{beispiel}
+
+  Daraus folgt, dass sich mit vier Bits die folgenden Zahlen darstellen lassen:
+  \begin{beispiel} \label{bsp:Komplementdarstellung_4Bits}
+    \begin{align*}
+      0 \Leftrightarrow 0000  ~&;~  -8 \Leftrightarrow 1000 \\
+      1 \Leftrightarrow 0001  ~&;~  -7 \Leftrightarrow 1001 \\
+      & \vdots \\
+      7 \Leftrightarrow 0111  ~&;~  -1 \Leftrightarrow 1111
+    \end{align*}    
+    Die Addition funktioniert hier auch wie bereits beschrieben:
+    \begin{align*}
+      &0010 \text{ also } 2 \\
+      +~ &1001 \text{ also } -7 \\
+      =~ &1011 \text{ also } -5
+    \end{align*}
+  \end{beispiel}
+
+  Wir wollen die $b$-Komplementdarstellung einer Zahl nun allgemein und für beliebige Basen $b \geq 2$ definieren.
+  
+  Zunächst definieren wir hierfür das $b$-Komplement in allgemeiner Form:
+
+  \begin{definition} \label{def:b-Komplement}
+    Seien $l,b \in \N$, mit $b\geq 2$, sei $n \in \{0, \dots, b^l-1\}$.
+    Dann ist 
+    \[K^l_b(n) \coloneq (b^l-n) \bmod b^l\]
+    das $l$-stellige $b$-Komplement von $n$.
+    Für die Basis $b=2$ nennt man $K_2$ das Zweierkomplement, für $b=10$ nennt man $K_{10}$ das Zehnerkomplement.
+  \end{definition}
+  
+  Weiter beschreiben wir allgemein, wie man das Komplement einer Zahl berechnet.
+
+  \begin{lemma} \label{lem:b-Komplement_berechnen}
+    Seien $l,b \in \N$, mit $b\geq 2$. Sei $n=\sum_{i=0}^{l-1} z_ib^i$ mit $z_i \in \{0, \dots, b-1\}$ für $i = 0, \dots, l-1$.
+    Dann gilt:
+    \begin{enumerate}[label=(\roman*)]
+      \item $K^l_b(n+1) = \displaystyle\sum_{i=0}^{l-1}(b-1-z_i)b^i, \text{ falls } n\neq b^l-1$ \label{lem:b-Komplement_berechnen_Berechnung}
+      \item $K^l_b(0)=0$ \label{lem:b-Komplement_berechnen_von0} 
+      \item $K^l_b(K^l_b(n))=n$ \label{lem:b-Komplement_berechnen_KomplementKomplement} 
+    \end{enumerate}
+  \end{lemma}
+
+    \begin{proof}
+      \begin{description}
+        \item[\ref{lem:b-Komplement_berechnen_von0}.] Folgt aus Definition~\ref{def:b-Komplement}: $K_l^b(n) = (b^l-n) \bmod b^l$, mit $n=0$:
+          \[K_l^b(0)=(b^l-0) \bmod b^l = b^l \bmod b^l = 0\]
+        \item[\ref{lem:b-Komplement_berechnen_Berechnung}] Sei nun $n \in \{0,\dots,b^l-2\}$.
+          Es gilt nach Definition~\ref{def:b-Komplement}: $K^b_l(m)=(b^l-m) \bmod b^l$.
+          Da $0 \leq n \leq b^l -2$ ist, folgt für $m = n+1$:
+          $1 \leq n+1 \leq b^l-1$.
+          Das heißt dann für $(b^l - (n+1))$ gilt $1 \leq b^l-(n+1) \leq b^l -1$, liegt also in $\{1, \dots, b^l-1\}$.
+          Es folgt, dass die Modulo-Operation trivial ist:
+          \[K^b_l(n+1)=b^l-(n+1)=b^l-1-n.\]
+          Es gilt wegen der geometrischen Reihe: $b^l-1 = \displaystyle\sum_{i=1}^{l-1} (b-1)b^i$, also
+          \begin{align*}
+            K^b_l(n+1) &= \left(\sum_{i=0}^{l-1}(b-1)b^i\right) -n \\
+            &= \left(\sum_{i=0}^{l-1}(b-1)b^i\right) - \left(\sum_{i=0}^{l-1} z_ib^i\right) \\
+            &= \sum_{i=0}^{l-1} ((b-1)b^i - z_ib^i) \\
+            &= \sum_{i=0}^{l-1} (b-1-z_i) b^i
+          \end{align*}
+        \item[\ref{lem:b-Komplement_berechnen_KomplementKomplement}] Für $n=0$ gilt nach \ref{lem:b-Komplement_berechnen_von0}: 
+          \[K^b_l(K^b_l(0)) = K^b_l(0) = 0\]
+          Sei nun $n \in \{1, \dots, b^l-1\}$ und wir setzen $m \coloneq K_l^b(n)$.
+          Wegen der Wahl von $n$ gilt dann 
+          \[m = (b^l-n) \bmod b^l = b^l-n.\]
+          Wir wenden $K_l^b$ an:
+          \[K_l^b(m) = (b^l-m) \bmod b^l\]
+          und substituieren $m=b^l-n$:
+          \[K_l^b(m)=(b^l-(b^l-n)) \bmod b^l = n \bmod b^l.\]
+          Da $0 < n < b^l$, gilt $n \bmod b^l = n$ und es folgt
+          \[K^b_l(K^b_l(n))=n.\]
+      \end{description}
+    \end{proof}
+
+  Wir betrachten das folgende Beispiel und nutzen das Lemma~\ref{lem:b-Komplement_berechnen}~\ref{lem:b-Komplement_berechnen_Berechnung}, um das $b$-Komplement von positiven Zahlen zu berechnen.
+  Prinzipiell subtrahiert man erst $1$ von der ursprünglichen Zahl und berechnet dasnn stellenweise die Differenz zu $b-1$:
+
+  \begin{beispiel}
+    \begin{enumerate}
+      \item Sei $b=10, l=4$. Wir berechnen $K_4^2(4809)$.
+        \begin{enumerate}
+          \item $n$ bestimmen: $n+1 = 4809 \Rightarrow n = 4809 -1 = 4808$
+          \item $n$ in Ziffern $z_i$ zerlegen: $n=4 \cdot 10^3 + 8 \cdot 10^2 + 0\cdot 10^1 + 8\cdot 10^0$. \\
+           Also: $z_3 = 4, z_2 = 8, z_1 = 0, z_0 =8$.
+          \item Einsetzen ergibt:
+            \begin{align*}
+              K_4^10(4808+1) &= \sum_i=0^3(10-1-z_i)10^i \\
+              &= (9-4) \cdot 10^3 + (9-8) \cdot 10^2 \\ 
+              &~~+ (9-0) \cdot 10^1 + (9-8) \cdot 10^0 \\
+              &= 5 \cdot 10^3 + 1 \cdot 10^2 + 9 \cdot 10^1 + 1 \cdot 10^0
+            \end{align*}
+        \end{enumerate}
+        Also ist $K_4^10(4809)=(5191)_10$.
+      \item Sei $b=2, l=4$. Wir berechnen $K_4^2(6)$. $6$ entspricht $(0110)_2$.
+        \begin{enumerate}
+          \item $n$ bestimmen: $n+1 = (0110)_2 \Rightarrow n = (0110)_2 -1 = (0101)_2$
+          \item $n$ in Ziffern $z_i$ zerlegen: $n=0 \cdot 2^3 + 1 \cdot 2^2 + 0\cdot 2^1 + 1\cdot 2^0$. \\
+           Also: $z_3 = 0, z_2 = 1, z_1 = 0, z_0 =1$.
+          \item Einsetzen ergibt:
+            \begin{align*}
+              K_4^2((0110)_2) &= \sum_{i=0}^3(2-1-z_i)2^i = \sum_{i=0}^3(1-z_i)2^i \\
+              &= (1-0) \cdot 2^3 + (1-1) \cdot 2^2 + (1-0) \cdot 2^1 + (1-1) \cdot 2^0 \\
+              &= 1 \cdot 2^3 + 0 \cdot 2^2 + 1\cdot 2^1 + 0\cdot 2^0 \\
+              &= (1010)_2
+            \end{align*}
+        \end{enumerate}
+        Also ist $K_4^2((0110)_2) = (1010)_2$.
+    \end{enumerate}
+  \end{beispiel}
+
+  Nun können wir ganze Zahlen in der $b$-Komplementdarstellung darstellen und speichern.
+  Damit Computer adäquat damit rechnen können, ist es vorteilhaft, wenn diese Zahlen dabei eine einheitliche Struktur aufweisen.
+  Konkret geht es darum, beliebige positive oder negative ganze Zahlen in einem festgelegten Speicherbereich von $l$ Stellen unterbringen zu können.
+  Möglich gemacht wird diese einheitliche Darstellung durch die folgende Definition:
+
+  \begin{definition} \label{def:l-stellige_b-Komplementdarstellung}
+    Seien $b,l \in \N$ mit $b \geq 2$ und sei $n \in \left\{- \left\lfloor \displaystyle\frac{b^l}{2} \right\rfloor, \dots, \left\lceil \displaystyle\frac{b^l}{2} \right\rceil -1 \right\} .$
+    Man erhält die $l$-stellige $b$-Komplementdarstellung von $n$, indem man die \hyperref[satz:b-adische_Darstellung]{$b$-adische Darstellung} von $n$, falls $n \geq 0$,
+    bzw. die $b$-adische Darstellung von $K_b^l(-n)$, falls $n < 0$, von der vordersten Stelle mit so vielen Nullen auffüllt, bis sich eine $l$-stellige Zahl ergibt.
+  \end{definition}
+
+  Mit dieser Darstellungsform kann der Computer alle Zahlen einheitlich speichern.
+  Darüber Hinaus ist der Vorteil der $b$-Komplementdarstellung, dass wir bzw. der Computer mit dieser ohne Fallunterscheidungen rechnen können.
+  Es ist also irrelevant, ob wir positive oder negative ganze Zahlen vorliegen haben.
+  Einfach gesprochen können wir in der $b$-Komplementdarstellung Addition und Subtraktion so durchführen, als ob wir immer positive ganze Zahlen vorliegen hätten.
+
+  Der folgende Satz begründet dabei, dass sich alle negativen ganzen Zahlen so in positive Zahlen im Sinne der $b$-Komplementdarstellung umwandeln lassen, um so wie oben beschrieben rechnen zu können:
+
+  \begin{satz} \label{satz:Rechnen-Komplementdarstellung}
+    Seien $b,l \in \N$ mit $b \geq 2$. Setze $Z \coloneq \left\{ - \left\lfloor \displaystyle\frac{b^l}{2} \right\rfloor , \dots, \left\lceil \displaystyle\frac{b^l}{2} \right\rceil -1 \right\}$.
+    Definiere die Funktion $f \colon Z \to \{0, \dots, b^l-1\}, z \mapsto 
+      \begin{cases}
+        z &\text{falls } z \geq 0 \\
+        K_l^b(-z) &\text{falls } z <0
+      \end{cases}$.
+    Dann ist $f$ bijektiv und es gilt für $x,y\in Z$:
+    \begin{enumerate}[label=(\roman*)] 
+      \item Ist $x+y \in Z$, so gilt 
+        \[f(x+y) = (f(x) + f(y) \bmod b^l).\] \label{satz:Rechnen-Komplementdarstellung_Addition}
+      \item Ist $x \cdot y \in Z$, so gilt 
+        \[f(x \cdot y) = (f(x) \cdot f(y)) \bmod b^l.\] \label{satz:Rechnen-Komplementdarstellung_Multiplikation}
+    \end{enumerate}
+  \end{satz}
+
+    \begin{proof}
+      \begin{description}
+        \item[Bijektivittät] Wir betrachten Definitions- und Zielbereich von $f$.
+          Die Menge \[Z = \left\{ - \left\lfloor \displaystyle\frac{b^l}{2} \right\rfloor , \dots, \left\lceil \displaystyle\frac{b^l}{2} \right\rceil -1 \right\}\] enthält genau $b^l$ Elemente.
+          Die Zielmenge \[\{0,\dots,b^l-1\}\] enthält ebenfalls genau $b^l$ Elemente.
+          Wir zeigen die Injektivität von $f$: 
+
+          Seien $z_1, z_2 \in Z$. Angenommen, $f(z_1) = f(z_2)$.
+          Da $f(z) \equiv z (\bmod b^l)$, gilt $z_1 \equiv z_2 (\bmod b^l)$.
+          Da die Differenz von zwei verschiedenen Elementen aus $Z$ im Betrag kleiner als $b^l$ sein muss, kann die Bedingung nur gelten, wenn $z_1 = z_2$.
+          Es folgt: $f$ ist injektiv.
+
+          Da $f$ injektiv ist, und $|Z| = b^l = |\{0,\dots,b^l-1\}|$, ist $f$ bijektiv.
+      \end{description}
+
+      Seien $x,y \in Z$ und $p,q \in \{0,1\}$. 
+      Wir betrachten $f(x)=x + p\cdot b^l$ und $f(y)=y + q \cdot b^l$.
+      
+      \begin{description}
+        \item[\ref{satz:Rechnen-Komplementdarstellung_Addition}] Beh.: $f(x+y) = (f(x)+f(y)) \bmod b^l$ gilt, wenn $(x+y) \in Z$. 
+          
+          Es gilt:
+          \begin{align*}
+            (f(x)+f(y)) (\bmod b^l) &= ((x+p\cdot b^l) + (y+q\cdot b^l)) (\bmod b^l) \\
+            &= (x+y+p \cdot b^l + q \cdot b^l) (\bmod b^l) \\
+            &= (x+y+ \underbrace{(p+q)\cdot b^l}_{\mathclap{\text{Vielfaches von }b^l}}) (\bmod b^l) \\
+            &= (x+y) (\bmod b^l) \\
+            &= (x+y+b^l) (\bmod b^l) \\
+            &= f(x+y)
+          \end{align*}
+
+        \item[\ref{satz:Rechnen-Komplementdarstellung_Multiplikation}] Beh.: $f(x \cdot y) = (f(x) \cdot f(y)) \bmod b^l$ gilt, wenn $(x\cdot y \in Z)$.
+          
+          Es gilt:
+          \begin{align*}
+            f(x+y) &= (x+y+b^l) \bmod b^l \\
+            &= (x+y) \bmod b^l \\
+            &= (x+y+0) \bmod b^l \\
+            &= (x+y+ \underbrace{(p+1)\cdot b^l}_{\mathclap{\equiv 0 (\bmod b^l)}}) \bmod b^l \\
+            &= (x+ p\cdot b^l + y + q\cdot b^l) \bmod b^l \\
+            &= ((x + p \cdot b^l) + (y + q\cdot b^l)) \bmod b^l \\
+            &= (f(x) + f(y)) \bmod b^l
+          \end{align*}
+      \end{description}
+    \end{proof}
+
+  \vspace{\baselineskip}
+
+  Mit den hier eingeführten Darstellungen für natürliche und ganze Zahlen haben wir Möglichkeiten gesehen, die Zahlen auf alternative Art und Weise darzustellen.
+  Wie bereits an mehreren Stellen erwähnt, bieten diese Formen besonders für die Verarbeitung in Computern Vorteile.
+  Aufgrund der diskutierten Sätze und Eigenschaften, können wir die gewöhnlichen Rechenoperationen nun auch innerhalb der $b$-Komplementdarstellung von ganzen Zahlen anwenden, ohne auf Ungenauigkeiten oder Probleme bei der Verarbeitung zu stoßen.
+
+\newpage
+\printbibliography[heading=bibintoc]
+
+\end{document}
